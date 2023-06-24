@@ -1,2 +1,0 @@
-# CLCD
-Clean Code

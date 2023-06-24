@@ -2,9 +2,7 @@ package com.mythos;
 
 import java.util.*;
 
-import com.mythos.ArgsException.ErrorCode;
-
-public class DoubleArgumentMarshaler implements ArgumentMarshaler{
+public class DoubleArgumentMarshaler implements ArgumentMarshaler {
 	private double doubleValue = Double.NaN;
 
 	public void set(Iterator<String> currentArgument) throws ArgsException {

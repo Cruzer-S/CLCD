@@ -1,7 +1,6 @@
 package com.mythos;
 
 import java.util.*;
-import com.mythos.ArgsException.ErrorCode;
 
 public class StringArgumentMarshaler implements ArgumentMarshaler{
 	private String stringValue = "";

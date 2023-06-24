@@ -2,8 +2,6 @@ package com.mythos;
 
 import java.util.*;
 
-import com.mythos.ArgsException.ErrorCode;
-
 public class Args {
 	private Map<Character, ArgumentMarshaler> marshalers;
 	private Set<Character> argsFound;
@@ -34,6 +32,8 @@ public class Args {
 			marshalers.put(elementId, new StringArgumentMarshaler());
 		else if (elementTail.equals("#"))
 			marshalers.put(elementId, new IntegerArgumentMarshaler());
+		else if (elementTail.equals("##"))
+			marshalers.put(elementId, new IntegerListArgumentMarshaler());
 		else if (elementTail.equals("[*]"))
 			marshalers.put(elementId, new StringArgumentMarshaler());
 		else
@@ -68,23 +68,19 @@ public class Args {
 		ArgumentMarshaler m = marshalers.get(argChar);
 		if (m == null) {
 			throw new ArgsException(ErrorCode.UNEXPECTED_ARGUMENT, argChar, null);
-		} else {
-			argsFound.add(argChar);
-			try {
-				m.set(currentArgument);
-			} catch (ArgsException e) {
-				e.setErrorArgumentId(argChar);
-				throw e;
-			}
+		}
+
+		argsFound.add(argChar);
+		try {
+			m.set(currentArgument);
+		} catch (ArgsException e) {
+			e.setErrorArgumentId(argChar);
+			throw e;
 		}
 	}
 
 	public boolean has(char arg) {
 		return argsFound.contains(arg);
-	}
-
-	public int nextArgument() {
-		return currentArgument.nextIndex();
 	}
 
 	public boolean getBoolean(char arg) {
@@ -97,6 +93,10 @@ public class Args {
 
 	public int getInt(char arg) {
 		return IntegerArgumentMarshaler.getValue(marshalers.get(arg));
+	}
+
+	public List<Integer> getIntList(char arg) {
+		return IntegerListArgumentMarshaler.getValue(marshalers.get(arg));
 	}
 
 	public double getDouble(char arg) {

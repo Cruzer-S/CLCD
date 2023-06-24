@@ -2,9 +2,7 @@ package com.mythos;
 
 import java.util.*;
 
-import com.mythos.ArgsException.ErrorCode;
-
-public class IntegerArgumentMarshaler implements ArgumentMarshaler{
+public class IntegerArgumentMarshaler implements ArgumentMarshaler {
 	private int intValue = 0;
 
 	public void set(Iterator<String> currentArgument) throws ArgsException {
