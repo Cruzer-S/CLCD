@@ -47,15 +47,12 @@ public class Args {
 
 	private void parseArgumentStrings(List<String> argsList) throws ArgsException
 	{
-		for (currentArgument = argsList.listIterator(); currentArgument.hasNext();)
-		{
+		for (currentArgument = argsList.listIterator(); currentArgument.hasNext(); ) {
 			String argString = currentArgument.next();
-			if (argString.startsWith("-")) {
-				parseArgumentCharacters(argString.substring(1));
-			} else {
-				currentArgument.previous();
+			if ( !argString.startsWith("-") )
 				break;
-			}
+
+			parseArgumentCharacters(argString.substring(1));
 		}
 	}
 
@@ -66,9 +63,8 @@ public class Args {
 
 	private void parseArgumentCharacter(char argChar) throws ArgsException {
 		ArgumentMarshaler m = marshalers.get(argChar);
-		if (m == null) {
+		if (m == null)
 			throw new ArgsException(ErrorCode.UNEXPECTED_ARGUMENT, argChar, null);
-		}
 
 		argsFound.add(argChar);
 		try {
