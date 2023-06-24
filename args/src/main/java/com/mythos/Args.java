@@ -3,12 +3,12 @@ package com.mythos;
 import java.util.*;
 
 public class Args {
-	private Map<Character, ArgumentMarshaler> marshalers;
+	private Map<Character, ArgumentMarshaler<?>> marshalers;
 	private Set<Character> argsFound;
 	private ListIterator<String> currentArgument;
 
 	public Args(String schema, String[] args) throws ArgsException {
-		marshalers = new HashMap<Character, ArgumentMarshaler>();
+		marshalers = new HashMap<Character, ArgumentMarshaler<?>>();
 		argsFound = new HashSet<Character>();
 
 		parseSchema(schema);
@@ -49,8 +49,10 @@ public class Args {
 	{
 		for (currentArgument = argsList.listIterator(); currentArgument.hasNext(); ) {
 			String argString = currentArgument.next();
-			if ( !argString.startsWith("-") )
+			if ( !argString.startsWith("-") ) {
+				currentArgument.previous();
 				break;
+			}
 
 			parseArgumentCharacters(argString.substring(1));
 		}
@@ -62,7 +64,7 @@ public class Args {
 	}
 
 	private void parseArgumentCharacter(char argChar) throws ArgsException {
-		ArgumentMarshaler m = marshalers.get(argChar);
+		ArgumentMarshaler<?> m = marshalers.get(argChar);
 		if (m == null)
 			throw new ArgsException(ErrorCode.UNEXPECTED_ARGUMENT, argChar, null);
 
@@ -79,23 +81,8 @@ public class Args {
 		return argsFound.contains(arg);
 	}
 
-	public boolean getBoolean(char arg) {
-		return BooleanArgumentMarshaler.getValue(marshalers.get(arg));
-	}
-
-	public String getString(char arg) {
-		return StringArgumentMarshaler.getValue(marshalers.get(arg));
-	}
-
-	public int getInt(char arg) {
-		return IntegerArgumentMarshaler.getValue(marshalers.get(arg));
-	}
-
-	public List<Integer> getIntList(char arg) {
-		return IntegerListArgumentMarshaler.getValue(marshalers.get(arg));
-	}
-
-	public double getDouble(char arg) {
-		return DoubleArgumentMarshaler.getValue(marshalers.get(arg));
+	public <T> T get(char arg) throws ArgsException
+	{
+		return ((ArgumentMarshaler<T>) marshalers.get(arg)).get();
 	}
 }

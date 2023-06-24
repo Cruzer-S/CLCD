@@ -2,36 +2,28 @@ package com.mythos;
 
 import java.util.*;
 
-public class IntegerListArgumentMarshaler implements ArgumentMarshaler {
-	private List<Integer> integerListValue = null;
-
+public class IntegerListArgumentMarshaler extends ArgumentMarshaler<List<Integer>> {
 	public void set(Iterator<String> currentArgument) throws ArgsException {
 		String parameter = null;
 
-		integerListValue = new ArrayList<Integer>();
+		value = new ArrayList<Integer>();
 		try {
 			parameter = currentArgument.next();
-			integerListValue.add(Integer.parseInt(parameter));
+			value.add(Integer.parseInt(parameter));
 
 			while (currentArgument.hasNext()) {
 				parameter = currentArgument.next();
-				if (parameter.startsWith("-"))
+				if (parameter.startsWith("-")) {
+					((ListIterator<String>) currentArgument).previous();
 					break;
+				}
 
-				integerListValue.add(Integer.parseInt(parameter));
+				value.add(Integer.parseInt(parameter));
 			}
 		} catch (NoSuchElementException e) {
 			throw new ArgsException(ErrorCode.MISSING_INTEGER);
 		} catch (NumberFormatException e) {
 			throw new ArgsException(ErrorCode.INVALID_INTEGER, parameter);
 		}
-	}
-
-	public static List<Integer> getValue(ArgumentMarshaler am)
-	{
-		if (am != null && am instanceof IntegerListArgumentMarshaler)
-			return ((IntegerListArgumentMarshaler) am).integerListValue;
-
-		return null;
 	}
 }
